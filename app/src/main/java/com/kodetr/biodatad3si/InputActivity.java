@@ -13,12 +13,31 @@ public class InputActivity extends AppCompatActivity{
     private EditText etNim, etNama, etAlamat;
     private Button btnSimpan;
 
+    private int TAG = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input);
 
         init();
+
+        if(getIntent().getStringExtra("nim") != null){
+            // UBAH data
+            TAG = 1;
+
+            etNim.setText(getIntent().getStringExtra("nim"));
+            etNim.setEnabled(false);
+            etNama.setText(getIntent().getStringExtra("nama"));
+            etAlamat.setText(getIntent().getStringExtra("alamat"));
+
+        }else{
+            // SIMPAN data
+            etNim.setEnabled(true);
+            TAG = 0;
+        }
+
+
     }
 
     private void init() {
@@ -43,9 +62,15 @@ public class InputActivity extends AppCompatActivity{
         biodata.setNama(etNama.getText().toString());
         biodata.setAlamat(etAlamat.getText().toString());
 
-        if(dao.create(biodata)){
-            Toast.makeText(this, "Berhasil disimpan", Toast.LENGTH_SHORT).show();
-            finish();
+        if(TAG == 0) {
+            if (dao.create(biodata)) {
+                Toast.makeText(this, "Berhasil disimpan", Toast.LENGTH_SHORT).show();
+            }
+        }else{
+            if (dao.update(biodata)) {
+                Toast.makeText(this, "Berhasil diubah", Toast.LENGTH_SHORT).show();
+            }
         }
+        finish();
     }
 }
